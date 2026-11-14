@@ -1,0 +1,87 @@
+---
+import '../styles/global.css';
+import site from '../data/site.json';
+import { url } from '../lib/url';
+
+interface Props {
+  titulo?: string;
+  descricao?: string;
+}
+const { titulo, descricao = site.descricao } = Astro.props;
+const tituloPagina = titulo ? `${titulo} · ${site.nome}` : `${site.nome} · ${site.cidade}`;
+
+const menu = [
+  { href: '/', rotulo: 'Início' },
+  { href: '/sobre/', rotulo: 'Sobre' },
+  { href: '/acoes/', rotulo: 'Ações' },
+  { href: '/transparencia/', rotulo: 'Transparência' },
+  { href: '/contato/', rotulo: 'Contato' },
+];
+const atual = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
+const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith(href));
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloPagina}</title>
+    <meta name="description" content={descricao} />
+    <meta property="og:title" content={tituloPagina} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
+    <meta name="theme-color" content="#1f5f5b" />
+  </head>
+  <body>
+    <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+    <header class="topo">
+      <div class="container topo-in">
+        <a class="marca" href={url('/')}>
+          <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#1f5f5b"></rect><path d="M6 16 16 7l10 9v9a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z" fill="#fbf6ee"></path><path d="M16 23.5s-4.5-2.7-4.5-5.6a2.4 2.4 0 0 1 4.5-1.2 2.4 2.4 0 0 1 4.5 1.2c0 2.9-4.5 5.6-4.5 5.6z" fill="#c8643c"></path></svg>
+          <span>{site.nome}</span>
+        </a>
+        <nav class="nav" aria-label="Principal">
+          {menu.map((m) => (
+            <a href={url(m.href)} aria-current={ativo(m.href) ? 'page' : undefined}>{m.rotulo}</a>
+          ))}
+          <a class="btn" href={url('/como-ajudar/')}>Doar</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="conteudo">
+      <slot />
+    </main>
+
+    <footer class="rodape">
+      <div class="container rodape-in">
+        <div>
+          <h2>{site.nome}</h2>
+          <p>{site.descricao}</p>
+          {site.cnpj && <p>CNPJ {site.cnpj}</p>}
+        </div>
+        <div>
+          <h2>Onde estamos</h2>
+          <p>{site.endereco}<br />{site.cidade}</p>
+          {site.telefone && <p>{site.telefone}</p>}
+          {site.email && <p><a href={`mailto:${site.email}`}>{site.email}</a></p>}
+        </div>
+        <div>
+          <h2>Navegue</h2>
+          <ul>
+            <li><a href={url('/acoes/')}>Ações</a></li>
+            <li><a href={url('/transparencia/')}>Transparência</a></li>
+            <li><a href={url('/como-ajudar/')}>Como ajudar</a></li>
+            <li><a href={url('/contato/')}>Contato</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="container fim">
+        © {new Date().getFullYear()} {site.nome} ({site.sigla}). Associação de direito privado, sem fins econômicos.
+      </div>
+    </footer>
+  </body>
+</html>

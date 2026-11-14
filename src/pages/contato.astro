@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import site from '../data/site.json';
+
+const whats = site.whatsapp ? `https://wa.me/${site.whatsapp.replace(/\D/g, '')}` : '';
+const temContato = site.telefone || site.whatsapp || site.email || site.instagram || site.facebook;
+---
+
+<Base titulo="Contato" descricao={`Fale com a ${site.nome}.`}>
+  <section class="secao">
+    <div class="container">
+      <p class="olho">Contato</p>
+      <h1>Fale com a gente</h1>
+      <div class="grade" style="margin-top:2rem">
+        <div class="cartao">
+          <h3>Endereço</h3>
+          <p>{site.endereco}<br />{site.cidade}</p>
+        </div>
+        <div class="cartao">
+          <h3>Canais</h3>
+          {temContato ? (
+            <dl class="dados">
+              {site.telefone && (<><dt>Telefone</dt><dd>{site.telefone}</dd></>)}
+              {whats && (<><dt>WhatsApp</dt><dd><a href={whats}>{site.whatsapp}</a></dd></>)}
+              {site.email && (<><dt>E-mail</dt><dd><a href={`mailto:${site.email}`}>{site.email}</a></dd></>)}
+              {site.instagram && (<><dt>Instagram</dt><dd><a href={site.instagram}>{site.instagram}</a></dd></>)}
+              {site.facebook && (<><dt>Facebook</dt><dd><a href={site.facebook}>{site.facebook}</a></dd></>)}
+            </dl>
+          ) : (
+            <p class="suave">Telefone, e-mail e redes sociais serão publicados em breve.</p>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

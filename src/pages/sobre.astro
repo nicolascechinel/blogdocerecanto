@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import site from '../data/site.json';
+import { url } from '../lib/url';
+---
+
+<Base titulo="Sobre" descricao={`Quem é a ${site.nome}, o que faz e quem atende.`}>
+  <section class="secao">
+    <div class="container">
+      <p class="olho">Sobre</p>
+      <h1>Quem somos</h1>
+      <p class="lead">
+        A {site.nome} ({site.sigla}) é uma associação de direito privado, sem fins econômicos, fundada em {site.fundacao},
+        com sede em {site.cidade}.
+      </p>
+
+      <div class="prosa">
+        <h2>Quem atendemos</h2>
+        <p>
+          Crianças e adolescentes que estão no Serviço de Acolhimento Institucional de São Joaquim (SAICA) e jovens
+          egressos, de 18 a 25 anos, que estiveram em acolhimento institucional e têm vínculos familiares rompidos ou
+          se encontram em situação de vulnerabilidade social.
+        </p>
+
+        <h2>Nossas finalidades</h2>
+        <p>Conforme o artigo 2º do Estatuto Social, a associação existe para:</p>
+        <ul>
+          <li>prestar assistência social, de saúde, educação e lazer ao público atendido;</li>
+          <li>promover ações de reintegração social;</li>
+          <li>
+            custear atendimento de saúde, consultas médicas, exames laboratoriais e de imagem, atendimento psicológico
+            e terapêutico, fisioterapia e fonoaudiologia;
+          </li>
+          <li>promover atividades de desenvolvimento de capacidades e competências;</li>
+          <li>facilitar o acesso a atividades educativas e profissionalizantes;</li>
+          <li>promover o acesso a atividades esportivas e de lazer;</li>
+          <li>angariar recursos e condições para esse atendimento.</li>
+        </ul>
+
+        <h2>Por que esse trabalho é necessário</h2>
+        <p>
+          Ao completar 18 anos, o jovem precisa deixar o serviço de acolhimento. Muitos ainda não terminaram os
+          estudos, não têm emprego nem moradia e não contam com família para recebê-los. Em municípios pequenos, como
+          São Joaquim, não há república pública para esses jovens. A associação atua para que essa saída não signifique
+          desamparo.
+        </p>
+
+        <h2>Diretoria</h2>
+        {site.diretoria.length > 0 ? (
+          <ul>
+            {site.diretoria.map((m: { cargo: string; nome: string }) => (
+              <li><strong>{m.cargo}:</strong> {m.nome}</li>
+            ))}
+          </ul>
+        ) : (
+          <p class="vazio">A composição da diretoria será publicada em breve.</p>
+        )}
+
+        <h2>Dados da entidade</h2>
+        <dl class="dados">
+          <dt>Nome</dt><dd>{site.nome} ({site.sigla})</dd>
+          <dt>Fundação</dt><dd>{site.fundacao}</dd>
+          <dt>CNPJ</dt><dd>{site.cnpj || 'A informar'}</dd>
+          <dt>Sede</dt><dd>{site.endereco}, {site.cidade}</dd>
+        </dl>
+        <p style="margin-top:1.5rem">
+          O estatuto e os demais documentos ficam na página de <a href={url('/transparencia/')}>Transparência</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>

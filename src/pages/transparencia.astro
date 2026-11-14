@@ -1,0 +1,155 @@
+---
+import Base from '../layouts/Base.astro';
+import site from '../data/site.json';
+import dados from '../data/transparencia.json';
+import { url, dataBR, moeda } from '../lib/url';
+
+type Documento = { titulo: string; categoria?: string; ano?: number | string; arquivo?: string };
+type Parceria = {
+  orgao: string;
+  instrumento: string;
+  dataAssinatura?: string;
+  objeto?: string;
+  valorTotal?: number;
+  valorLiberado?: number;
+  prestacaoContas?: string;
+  equipe?: string;
+};
+type Prestacao = { ano: number | string; receitas?: number; despesas?: number; observacao?: string; arquivo?: string };
+
+const documentos = (dados.documentos as Documento[]).slice().sort((a, b) => Number(b.ano ?? 0) - Number(a.ano ?? 0));
+const parcerias = dados.parcerias as Parceria[];
+const prestacoes = (dados.prestacoes as Prestacao[]).slice().sort((a, b) => Number(b.ano) - Number(a.ano));
+
+// Agrupa os documentos por categoria, mantendo uma ordem fixa.
+const ordem = ['Estatuto', 'Ata', 'Balanço e demonstrações', 'Relatório de atividades', 'Certidão', 'Outro'];
+const grupos = ordem
+  .map((categoria) => ({ categoria, itens: documentos.filter((d) => (d.categoria || 'Outro') === categoria) }))
+  .filter((g) => g.itens.length > 0);
+
+const dataParceria = (s?: string) => (s ? dataBR(new Date(s), 'short') : '—');
+---
+
+<Base titulo="Transparência" descricao={`Documentos, contas e parcerias da ${site.nome}.`}>
+  <section class="secao">
+    <div class="container">
+      <p class="olho">Transparência</p>
+      <h1>Prestação de contas</h1>
+      <p class="lead">
+        Aqui ficam os documentos da associação, o resumo das receitas e despesas e as parcerias com o poder público.
+      </p>
+
+      <h2 style="margin-top:2.5rem">Identificação</h2>
+      <div class="cartao">
+        <dl class="dados">
+          <dt>Entidade</dt><dd>{site.nome} ({site.sigla})</dd>
+          <dt>Natureza</dt><dd>Associação de direito privado, sem fins econômicos</dd>
+          <dt>CNPJ</dt><dd>{site.cnpj || 'A informar'}</dd>
+          <dt>Fundação</dt><dd>{site.fundacao}</dd>
+          <dt>Sede</dt><dd>{site.endereco}, {site.cidade}</dd>
+        </dl>
+      </div>
+
+      <h2 style="margin-top:2.5rem">Documentos</h2>
+      {grupos.length > 0 ? (
+        grupos.map((g) => (
+          <>
+            <h3 style="margin-top:1.5rem">{g.categoria}</h3>
+            <ul class="lista-docs">
+              {g.itens.map((d) => (
+                <li>
+                  <span>{d.titulo}{d.ano && <span class="suave"> · {d.ano}</span>}</span>
+                  {d.arquivo ? <a href={url(d.arquivo)}>Abrir documento</a> : <span class="suave pequeno">Arquivo pendente</span>}
+                </li>
+              ))}
+            </ul>
+          </>
+        ))
+      ) : (
+        <p class="vazio">Estatuto, atas e balanços serão publicados aqui.</p>
+      )}
+
+      <h2 style="margin-top:2.5rem">Receitas e despesas por ano</h2>
+      {prestacoes.length > 0 ? (
+        <div class="tabela-rolagem">
+          <table>
+            <thead>
+              <tr><th>Ano</th><th class="num">Receitas</th><th class="num">Despesas</th><th>Observações</th><th>Relatório</th></tr>
+            </thead>
+            <tbody>
+              {prestacoes.map((p) => (
+                <tr>
+                  <td>{p.ano}</td>
+                  <td class="num">{moeda(p.receitas)}</td>
+                  <td class="num">{moeda(p.despesas)}</td>
+                  <td>{p.observacao || '—'}</td>
+                  <td>{p.arquivo ? <a href={url(p.arquivo)}>Abrir</a> : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p class="vazio">O resumo anual de receitas e despesas será publicado aqui.</p>
+      )}
+
+      <h2 style="margin-top:2.5rem">Parcerias com o poder público</h2>
+      <p class="suave pequeno">
+        Informações exigidas pelo art. 11 da Lei nº 13.019/2014 (Marco Regulatório das Organizações da Sociedade Civil).
+      </p>
+      {parcerias.length > 0 ? (
+        <div class="tabela-rolagem">
+          <table>
+            <thead>
+              <tr>
+                <th>Órgão</th><th>Instrumento</th><th>Assinatura</th><th>Objeto</th>
+                <th class="num">Valor total</th><th class="num">Valor liberado</th><th>Prestação de contas</th><th>Equipe paga com a parceria</th>
+              </tr>
+            </thead>
+            <tbody>
+              {parcerias.map((p) => (
+                <tr>
+                  <td>{p.orgao}</td>
+                  <td>{p.instrumento}</td>
+                  <td>{dataParceria(p.dataAssinatura)}</td>
+                  <td>{p.objeto || '—'}</td>
+                  <td class="num">{moeda(p.valorTotal)}</td>
+                  <td class="num">{moeda(p.valorLiberado)}</td>
+                  <td>{p.prestacaoContas || '—'}</td>
+                  <td>{p.equipe || '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p class="vazio">Nenhuma parceria cadastrada até o momento.</p>
+      )}
+
+      <div class="prosa">
+        <h2>Base legal</h2>
+        <ul>
+          <li>
+            <strong>Lei nº 13.019/2014, art. 11:</strong> a organização divulga na internet as parcerias firmadas com a
+            administração pública, com objeto, valores e situação da prestação de contas.
+          </li>
+          <li>
+            <strong>Lei nº 12.527/2011 (Lei de Acesso à Informação), art. 2º:</strong> entidades sem fins lucrativos que
+            recebem recursos públicos dão publicidade a esses recursos e à sua destinação.
+          </li>
+          <li>
+            <strong>Código Civil e Estatuto Social:</strong> estatuto, atas e contas ficam disponíveis aos associados e à
+            comunidade.
+          </li>
+        </ul>
+
+        <h2>Privacidade e proteção de imagem</h2>
+        <p>
+          Este site não publica nomes, rostos ou informações que identifiquem crianças e adolescentes acolhidos,
+          conforme o Estatuto da Criança e do Adolescente (arts. 17 e 100) e a Lei Geral de Proteção de Dados (art. 14).
+          Imagens de jovens maiores de idade são publicadas apenas com autorização por escrito.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>

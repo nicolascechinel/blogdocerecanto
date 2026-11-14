@@ -1,0 +1,20 @@
+{
+  "name": "blogdocerecanto",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Site da Associação Doce Recanto (AASDR-SJ) — São Joaquim/SC",
+  "license": "MIT",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^7.4.1",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "@types/qrcode": "^1.5.6"
+  }
+}

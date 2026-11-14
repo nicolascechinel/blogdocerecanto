@@ -1,0 +1,91 @@
+---
+import Base from '../layouts/Base.astro';
+import PostCartao from '../components/PostCartao.astro';
+import site from '../data/site.json';
+import { url } from '../lib/url';
+import { postsPublicados } from '../lib/posts';
+
+const recentes = (await postsPublicados()).slice(0, 3);
+---
+
+<Base>
+  <section class="capa">
+    <div class="container">
+      <p class="olho">{site.cidade} · desde 2016</p>
+      <h1>{site.lema}</h1>
+      <p class="lead">
+        Aos 18 anos, quem vive em acolhimento institucional precisa sair, muitas vezes sem família, casa ou emprego.
+        A {site.nome} acompanha crianças, adolescentes e jovens de 18 a 25 anos nessa travessia.
+      </p>
+      <div class="acoes-btn">
+        <a class="btn" href={url('/como-ajudar/')}>Quero ajudar</a>
+        <a class="btn btn-claro" href={url('/sobre/')}>Conheça a associação</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <p class="olho">O que fazemos</p>
+      <h2>Apoio em saúde, estudo, trabalho e convivência</h2>
+      <div class="grade grade-4" style="margin-top:1.5rem">
+        <div class="cartao">
+          <h3>Saúde</h3>
+          <p>Custeio de consultas, exames, atendimento psicológico, fisioterapia e fonoaudiologia.</p>
+        </div>
+        <div class="cartao">
+          <h3>Educação e trabalho</h3>
+          <p>Acesso a atividades educativas e cursos profissionalizantes para abrir caminho ao primeiro emprego.</p>
+        </div>
+        <div class="cartao">
+          <h3>Esporte e lazer</h3>
+          <p>Atividades esportivas e de lazer que fortalecem vínculos e a convivência comunitária.</p>
+        </div>
+        <div class="cartao">
+          <h3>Reintegração social</h3>
+          <p>Acompanhamento de jovens que deixaram o acolhimento, com vínculos familiares rompidos ou fragilizados.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao-areia">
+    <div class="container">
+      <p class="olho">Ações</p>
+      <h2>Últimas notícias</h2>
+      {recentes.length > 0 ? (
+        <div class="grade" style="margin-top:1.5rem">
+          {recentes.map((post) => <PostCartao post={post} />)}
+        </div>
+      ) : (
+        <p class="vazio">Ainda não há publicações.</p>
+      )}
+      <div class="acoes-btn">
+        <a class="btn btn-claro" href={url('/acoes/')}>Ver todas as ações</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <div class="grade">
+        <div>
+          <p class="olho">Transparência</p>
+          <h2>Cada doação tem destino público</h2>
+          <p class="suave">
+            Estatuto, atas, balanços e parcerias com o poder público ficam disponíveis para qualquer pessoa consultar.
+          </p>
+          <a class="btn btn-claro" href={url('/transparencia/')}>Acessar a transparência</a>
+        </div>
+        <div>
+          <p class="olho">Como ajudar</p>
+          <h2>Doe por PIX ou ofereça seu tempo</h2>
+          <p class="suave">
+            Doações em dinheiro, trabalho voluntário e parcerias com profissionais e empresas mantêm o atendimento.
+          </p>
+          <a class="btn" href={url('/como-ajudar/')}>Ver formas de ajudar</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

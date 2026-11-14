@@ -1,0 +1,13 @@
+---
+import { url, dataBR } from '../lib/url';
+const { post } = Astro.props;
+---
+
+<a class="post-cartao" href={url(`/acoes/${post.id}/`)}>
+  {post.data.capa && <img src={url(post.data.capa)} alt={post.data.capaDescricao ?? ''} loading="lazy" />}
+  <div class="corpo">
+    <time datetime={post.data.data.toISOString().slice(0, 10)}>{dataBR(post.data.data)}</time>
+    <h3>{post.data.titulo}</h3>
+    {post.data.resumo && <p class="suave">{post.data.resumo}</p>}
+  </div>
+</a>

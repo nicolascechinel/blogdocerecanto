@@ -1,0 +1,126 @@
+# Configuração do painel de edição (Pages CMS — https://pagescms.org).
+# Define os formulários que a equipe da associação usa para editar o site.
+media:
+  input: public/uploads
+  output: /uploads
+
+content:
+  - name: acoes
+    label: Ações (blog)
+    type: collection
+    path: src/content/acoes
+    filename: '{year}-{month}-{day}-{primary}.md'
+    view:
+      fields: [titulo, data, rascunho]
+      primary: titulo
+      sort: [data, titulo]
+      default:
+        sort: data
+        order: desc
+    fields:
+      - name: titulo
+        label: Título
+        type: string
+        required: true
+      - name: data
+        label: Data
+        type: date
+        required: true
+      - name: resumo
+        label: Resumo (aparece na lista de ações)
+        type: text
+      - name: capa
+        label: Foto de capa (não use imagens que identifiquem crianças ou adolescentes)
+        type: image
+      - name: capaDescricao
+        label: Descrição da foto (para leitores de tela)
+        type: string
+      - name: rascunho
+        label: Rascunho (não aparece no site)
+        type: boolean
+        default: false
+      - name: body
+        label: Texto
+        type: rich-text
+
+  - name: site
+    label: Dados da associação
+    type: file
+    path: src/data/site.json
+    format: json
+    fields:
+      - { name: nome, label: Nome, type: string, required: true }
+      - { name: sigla, label: Sigla, type: string }
+      - { name: lema, label: Frase da página inicial, type: string }
+      - { name: descricao, label: Descrição curta, type: text }
+      - { name: fundacao, label: Data de fundação, type: string }
+      - { name: cnpj, label: CNPJ, type: string }
+      - { name: endereco, label: Endereço, type: string }
+      - { name: cidade, label: Cidade/UF, type: string }
+      - { name: telefone, label: Telefone, type: string }
+      - { name: whatsapp, label: WhatsApp (com DDD), type: string }
+      - { name: email, label: E-mail, type: string }
+      - { name: instagram, label: Instagram (link completo), type: string }
+      - { name: facebook, label: Facebook (link completo), type: string }
+      - name: pix
+        label: PIX para doações
+        type: object
+        fields:
+          - { name: chave, label: Chave PIX, type: string }
+          - name: tipoChave
+            label: Tipo da chave
+            type: select
+            options:
+              values: [CNPJ, CPF, E-mail, Telefone, Aleatória]
+          - { name: titular, label: Nome do titular da conta, type: string }
+          - { name: banco, label: Banco, type: string }
+      - name: diretoria
+        label: Diretoria
+        type: object
+        list: true
+        fields:
+          - { name: cargo, label: Cargo, type: string }
+          - { name: nome, label: Nome, type: string }
+
+  - name: transparencia
+    label: Transparência
+    type: file
+    path: src/data/transparencia.json
+    format: json
+    fields:
+      - name: documentos
+        label: Documentos (estatuto, atas, balanços)
+        type: object
+        list: true
+        fields:
+          - { name: titulo, label: Título, type: string, required: true }
+          - name: categoria
+            label: Categoria
+            type: select
+            options:
+              values: [Estatuto, Ata, Balanço e demonstrações, Relatório de atividades, Certidão, Outro]
+          - { name: ano, label: Ano, type: number }
+          - { name: arquivo, label: Arquivo (PDF), type: file }
+      - name: prestacoes
+        label: Receitas e despesas por ano
+        type: object
+        list: true
+        fields:
+          - { name: ano, label: Ano, type: number, required: true }
+          - { name: receitas, label: Total de receitas (R$), type: number }
+          - { name: despesas, label: Total de despesas (R$), type: number }
+          - { name: observacao, label: Observações, type: text }
+          - { name: arquivo, label: Relatório (PDF), type: file }
+      - name: parcerias
+        label: Parcerias com o poder público (Lei 13.019/2014, art. 11)
+        type: object
+        list: true
+        fields:
+          - { name: orgao, label: Órgão público, type: string, required: true }
+          - { name: instrumento, label: Instrumento (ex. Termo de Fomento nº 01/2026), type: string, required: true }
+          - { name: dataAssinatura, label: Data de assinatura, type: date }
+          - { name: objeto, label: Objeto da parceria, type: text }
+          - { name: valorTotal, label: Valor total (R$), type: number }
+          - { name: valorLiberado, label: Valor já liberado (R$), type: number }
+          - { name: prestacaoContas, label: Situação da prestação de contas, type: string }
+          - { name: equipe, label: Equipe paga com a parceria (funções e remuneração), type: text }

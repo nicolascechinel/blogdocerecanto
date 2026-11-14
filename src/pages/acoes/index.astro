@@ -1,0 +1,24 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostCartao from '../../components/PostCartao.astro';
+import { postsPublicados } from '../../lib/posts';
+
+const posts = await postsPublicados();
+---
+
+<Base titulo="Ações" descricao="Notícias e registros das atividades da Associação Doce Recanto.">
+  <section class="secao">
+    <div class="container">
+      <p class="olho">Blog</p>
+      <h1>Ações</h1>
+      <p class="lead">Notícias e registros das atividades realizadas pela associação.</p>
+      {posts.length > 0 ? (
+        <div class="grade" style="margin-top:2rem">
+          {posts.map((post) => <PostCartao post={post} />)}
+        </div>
+      ) : (
+        <p class="vazio">Ainda não há publicações.</p>
+      )}
+    </div>
+  </section>
+</Base>
