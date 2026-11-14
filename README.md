@@ -49,6 +49,12 @@ npm run build    # gera o site na pasta dist/
 
 O resultado de `npm run build` (pasta `dist/`) pode ser publicado em qualquer hospedagem de site estático, como GitHub Pages, Cloudflare Pages ou Netlify.
 
+### GitHub Pages
+
+O arquivo `.github/workflows/pages.yml` publica o site no GitHub Pages a cada alteração no branch `main`. Para ativar, vá em **Settings → Pages** no repositório e escolha **GitHub Actions** em *Source*. Em contas gratuitas, o repositório precisa ser público.
+
+### Outras hospedagens
+
 Duas variáveis de ambiente ajustam os endereços no momento do build:
 
 - `SITE_URL`: endereço do site, por exemplo `https://docerecanto.org.br`.
